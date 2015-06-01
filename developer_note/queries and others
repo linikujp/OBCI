@@ -1,0 +1,213 @@
+### this query is out-dated, used when OBCI was OBC.
+
+select ?construct ?TDFdomain
+where 
+{ ?TDFdomain rdfs:subClassOf ?s_ .
+  ?s_ owl:onProperty <http://webprotege.stanford.edu/object_properties/UAyTK3dbg8Ksr5RRXwtMu> .
+  ?s_ owl:someValuesFrom ?construct .}
+order by ?construct
+
+### change from webprotege to obc specific properties
+
+annotation_properties2:bFoFBDbJ60Lj1mO3KHngW
+to
+example_of_usage
+
+annotation_properties:ywkfeHA7N5ljub18GEVgh
+to
+coding_rule
+
+annotation_properties3:FfdEVNDWolibUVXYHYtPO
+to
+BCT_taxonomy_code
+
+http://webprotege.stanford.edu/object_properties/DrTzw0GOLeq3jbBUsmAiO1
+to
+&obo;obc.owl#has_part
+
+http://webprotege.stanford.edu/object_properties/KZvSsq4opiCkl3kd8VjBl
+to 
+&obo;obc.owl#has_BCT_group_member
+
+http://webprotege.stanford.edu/object_properties/UAyTK3dbg8Ksr5RRXwtMu
+to
+&obo;obc.owl#has_TDF_domain_construct
+
+http://webprotege.stanford.edu/object_properties/7vZl8LJOk0HkKqyYsjfPVR
+to
+&obo;obc.owl#is_to_influence
+
+http://webprotege.stanford.edu/object_properties/8sUm8NEYykSv2CFhWNcQ2X
+to
+&obo;obc.owl#acts_through
+
+http://webprotege.stanford.edu/object_properties/9yeDpu40IJHzYeZKAL0rRZ
+to
+&obo;obc.owl#is_BCT_group_member_of
+
+
+### Query change to:
+select ?construct ?TDFdomain
+where 
+{ ?TDFdomain rdfs:subClassOf ?s_ .
+  ?s_ owl:onProperty <http://purl.obolibrary.org/obo/obc.owl#has_TDF_domain_construct> .
+  ?s_ owl:someValuesFrom ?construct .}
+order by ?construct
+
+
+###
+Query a BCT-> intervention function -> TDF domain
+
+select ?bct ?bctlabel ?interFunc ?TDFdomain
+where {
+  ?bct rdfs:subClassOf ?s_ .
+  ?bct rdfs:label ?bctlabel .
+  ?s_ owl:onProperty <http://purl.obolibrary.org/obo/obc.owl#acts_through> .
+  ?s_ owl:someValuesFrom ?interFunc .
+  ?interFunc rdfs:subClassOf ?s2_ .
+  ?s2_ owl:onProperty <http://purl.obolibrary.org/obo/obc.owl#is_to_influence> .
+  ?s2_ owl:someValuesFrom ?TDFdomain .
+  }
+  order by ?bct
+  
+  As we expected, since BCT 
+  
+  ###
+  
+ 1. What are all the TDF domains that are part of reflective motivation(obc_0000011) (a sub-driver of behavior)? 
+ select ?TDFdomain ?label
+ where {
+    ?TDFdomain rdfs:subClassOf ?s_ .
+	?TDFdomain rdfs:label ?label .
+	?s_ owl:onProperty <http://purl.obolibrary.org/obo/obc.owl#part_of> .
+	?s_ owl:someValuesFrom obo:obc_0000011 .
+	}
+ 
+ 
+TDFdomain	Label
+obo:obc_0000222	"social_professional_role_and_identity_domain"
+obo:obc_0000223	"social_influences_domain"
+obo:obc_0000225	"knowledge_domain"
+obo:obc_0000226	"intentions_domain"
+obo:obc_0000227	"goals_domain"
+obo:obc_0000230	"beliefs_about_consequences_domain"
+obo:obc_0000231	"beliefs_about_capabilities_domain"
+ 
+ 2. What are all the behavior change techniques that influence a particular TDF domain? (e.g. Believe about capability (obc_0000231))? 
+ 
+ select ?bct ?bctlabel 
+where {
+  ?bct rdfs:subClassOf ?s_ .
+  ?bct rdfs:label ?bctlabel .
+  ?s_ owl:onProperty <http://purl.obolibrary.org/obo/obc.owl#acts_through> .
+  ?s_ owl:someValuesFrom ?interFunc .
+  ?interFunc rdfs:subClassOf ?s2_ .
+  ?s2_ owl:onProperty <http://purl.obolibrary.org/obo/obc.owl#is_to_influence> .
+  ?s2_ owl:someValuesFrom obo:obc_0000231 .
+  }
+  order by ?bct
+  
+  Bct	Bctlabel
+obo:obc_0000043	"action_planning_BCT"@en
+obo:obc_0000044	"vicarious_consequences_BCT"@en
+obo:obc_0000045	"verbal_persuasion_about_capability_BCT"@en
+obo:obc_0000046	"valued_self_indentity_BCT"@en
+obo:obc_0000047	"social_support_unspecified_BCT"@en
+obo:obc_0000048	"social_support_practical_BCT"
+obo:obc_0000049	"social_support_emotional_BCT"@en
+obo:obc_0000055	"self-talk_BCT"@en
+obo:obc_0000057	"self-monitoring_of_outcome_of_behavior_BCT"@en
+obo:obc_0000058	"self-monitoring_of_behavior_BCT"@en
+obo:obc_0000059	"satiation_BCT"@en
+obo:obc_0000060	"salience_of_consequence_BCT"@en
+obo:obc_0000066	"review_of_outcome_goal_BCT"@en
+obo:obc_0000067	"review_behavior_goal_BCT"@en
+obo:obc_0000074	"reduce_prompts_or_cues_BCT"@en
+obo:obc_0000075	"reduce_negative_emotions_BCT"@en
+obo:obc_0000078	"pros_and_cons_BCT"@en
+obo:obc_0000082	"pharmacological_support_BCT"@en
+obo:obc_0000083	"paradoxical_instructions_BCT"@en
+obo:obc_0000084	"overcorrection_BCT"@en
+obo:obc_0000087	"monitoring_outcome_of_behavior_by_others_without_feedback_BCT"@en
+obo:obc_0000089	"monitoring_of_behavior_by others_without_feedback_BCT"@en
+obo:obc_0000090	"mental_rehearsal_of_successful_performance_BCT"@en
+obo:obc_0000093	"instruction_on_how_to_perform_a_behavior_BCT"@en
+obo:obc_0000099	"incompatible_beliefs_BCT"@en
+obo:obc_0000103	"identity_associated_with_changed_behavior_BCT"@en
+obo:obc_0000104	"identification_of_self_as_role_model"@en
+obo:obc_0000105	"habit_reversal_BCT"@en
+obo:obc_0000106	"habit_formation_BCT"@en
+obo:obc_0000107	"graded_task_BCT"@en
+obo:obc_0000108	"goal_setting_outcome_BCT"@en
+obo:obc_0000109	"goal_setting_behavior_BCT"@en
+obo:obc_0000110	"generalization_of_a_target_behavior_BCT"@en
+obo:obc_0000113	"framing_or_reframing_BCT"@en
+obo:obc_0000114	"focus_on_past_success_BCT"@en
+obo:obc_0000115	"feedback_on_outcomes_of_behavior_BCT"@en
+obo:obc_0000116	"feedback_on_behavior_BCT"@en
+obo:obc_0000117	"exposure_BCT"@en
+obo:obc_0000119	"distraction_BCT"@en
+obo:obc_0000122	"credible_source_BCT"@en
+obo:obc_0000123	"conserving_mental_resources_BCT"@en
+obo:obc_0000124	"comparative_imagining_of_future_outcomes_BCT"@en
+obo:obc_0000125	"commitment_BCT"@en
+obo:obc_0000127	"body_changes_BCT"@en
+obo:obc_0000128	"biofeedback_BCT"@en
+obo:obc_0000131	"behavioral_contract_BCT"@en
+obo:obc_0000132	"behavior_substitution_BCT"@en
+obo:obc_0000134	"avoidance_or_reducing_exposure_to_cues_for_the_behavior_BCT"@en
+obo:obc_0000135	"assoicative_learning_BCT"@en
+obo:obc_0000137	"anticipated_regret_BCT"@en
+
+
+Bct	Bctlabel
+obo:obc_0000048	"social_support_practical_BCT"
+obo:obc_0000043	"action_planning_BCT"@en
+obo:obc_0000137	"anticipated_regret_BCT"@en
+obo:obc_0000135	"assoicative_learning_BCT"@en
+obo:obc_0000134	"avoidance_or_reducing_exposure_to_cues_for_the_behavior_BCT"@en
+obo:obc_0000132	"behavior_substitution_BCT"@en
+obo:obc_0000131	"behavioral_contract_BCT"@en
+obo:obc_0000128	"biofeedback_BCT"@en
+obo:obc_0000127	"body_changes_BCT"@en
+obo:obc_0000125	"commitment_BCT"@en
+obo:obc_0000124	"comparative_imagining_of_future_outcomes_BCT"@en
+obo:obc_0000123	"conserving_mental_resources_BCT"@en
+obo:obc_0000122	"credible_source_BCT"@en
+obo:obc_0000119	"distraction_BCT"@en
+obo:obc_0000117	"exposure_BCT"@en
+obo:obc_0000116	"feedback_on_behavior_BCT"@en
+obo:obc_0000115	"feedback_on_outcomes_of_behavior_BCT"@en
+obo:obc_0000114	"focus_on_past_success_BCT"@en
+obo:obc_0000113	"framing_or_reframing_BCT"@en
+obo:obc_0000110	"generalization_of_a_target_behavior_BCT"@en
+obo:obc_0000109	"goal_setting_behavior_BCT"@en
+obo:obc_0000108	"goal_setting_outcome_BCT"@en
+obo:obc_0000107	"graded_task_BCT"@en
+obo:obc_0000106	"habit_formation_BCT"@en
+obo:obc_0000105	"habit_reversal_BCT"@en
+obo:obc_0000104	"identification_of_self_as_role_model"@en
+obo:obc_0000103	"identity_associated_with_changed_behavior_BCT"@en
+obo:obc_0000099	"incompatible_beliefs_BCT"@en
+obo:obc_0000093	"instruction_on_how_to_perform_a_behavior_BCT"@en
+obo:obc_0000090	"mental_rehearsal_of_successful_performance_BCT"@en
+obo:obc_0000089	"monitoring_of_behavior_by others_without_feedback_BCT"@en
+obo:obc_0000087	"monitoring_outcome_of_behavior_by_others_without_feedback_BCT"@en
+obo:obc_0000084	"overcorrection_BCT"@en
+obo:obc_0000083	"paradoxical_instructions_BCT"@en
+obo:obc_0000082	"pharmacological_support_BCT"@en
+obo:obc_0000078	"pros_and_cons_BCT"@en
+obo:obc_0000075	"reduce_negative_emotions_BCT"@en
+obo:obc_0000074	"reduce_prompts_or_cues_BCT"@en
+obo:obc_0000067	"review_behavior_goal_BCT"@en
+obo:obc_0000066	"review_of_outcome_goal_BCT"@en
+obo:obc_0000060	"salience_of_consequence_BCT"@en
+obo:obc_0000059	"satiation_BCT"@en
+obo:obc_0000058	"self-monitoring_of_behavior_BCT"@en
+obo:obc_0000057	"self-monitoring_of_outcome_of_behavior_BCT"@en
+obo:obc_0000055	"self-talk_BCT"@en
+obo:obc_0000049	"social_support_emotional_BCT"@en
+obo:obc_0000047	"social_support_unspecified_BCT"@en
+obo:obc_0000046	"valued_self_indentity_BCT"@en
+obo:obc_0000045	"verbal_persuasion_about_capability_BCT"@en
+obo:obc_0000044	"vicarious_consequences_BCT"@en
